@@ -46,7 +46,7 @@ public:
     }
     separator << _corner << std::endl;
     output << separator.str(); //Output the initial line.
-    for (auto row : _table) {
+    for (auto &row : _table) {
       for (size_t i = 0; i < row.size(); i++) {
         output << _bar;                       // Leading Edge of cell
         output << std::setw(width[i]) << row.at(i);
@@ -69,7 +69,7 @@ private:
     size_t _width{0};
     if (_table.empty())
       return _width; //Zero if there's nothing.
-    for (auto row : _table) {
+    for (auto &row : _table) {
       try { //The following compares each width value and keeps the largest
         _width = _width > row.at(row_idx).length() ? _width
                                                    : row.at(row_idx).length();
