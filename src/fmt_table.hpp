@@ -8,6 +8,7 @@
  *
  * Copyright (C) MK 2022. Licensed under the MIT license.
  */
+#pragma once
 
 #include <algorithm>
 #include <iomanip>
