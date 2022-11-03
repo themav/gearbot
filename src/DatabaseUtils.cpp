@@ -3,6 +3,9 @@
 //
 
 #include "DatabaseUtils.h"
+#include <mariadb/mariadb_com.h>
+#include <mariadb/mysql.h>
+#include "fmt_table.hpp"
 
 /* This function takes the ID of the purchase user, whether it's skis, and a short description */
 void DatabaseUtils::insertPurchase(const std::string& purchaser, bool& is_skis, const std::string& desc) {
@@ -58,6 +61,60 @@ bool DatabaseUtils::deleteUserEntry(const dpp::snowflake &purchaser) {
         completed = true;
     mysql_stmt_close(statement);//Free memory
     return completed;
+}
+
+/* This function will return a formatted text table representing the user's
+ * purchases Returns: a string containing a formatted fixed-width table */
+std::string DatabaseUtils::getUserEntries(const dpp::snowflake &_user) {
+  std::string query{
+      "SELECT is_skis,description FROM purchases WHERE purchase_user = \'" +
+      std::to_string(_user) + "\'"};
+  mysql_query(conn, query.c_str());
+  MYSQL_RES *result = mysql_store_result(conn);
+  fmt_table my_table;
+  my_table.add_cell("Type");
+  my_table.add_cell("Description");
+  my_table.end_row();
+  while (auto row = mysql_fetch_row(result)) {
+    for (unsigned int i = 0; i < mysql_num_fields(result); i++) {
+      if (row[i] == NULL)
+        my_table.add_cell("");
+      else
+        my_table.add_cell(row[i]);
+    }
+    my_table.end_row();
+  }
+  mysql_free_result(result);
+  return my_table.print_table();
+}
+
+/* This function searches using _criteria in the description field of
+ * the purchases table.
+ * Returns: A string with a fixed-width formatted table containing the results*/
+std::string DatabaseUtils::searchIn(const std::string &_criteria) {
+  std::string query{"SELECT purchase_user,description FROM purchases "
+                    "WHERE description LIKE \'%" +
+                    _criteria + "%\'"};
+  // Check for SQL injection by making sure ; is NOT found
+  if (query.find(";") != std::string::npos) // Not equal to not found
+    return "Nice try at SQL Injection.";
+  mysql_query(conn, query.c_str());
+  MYSQL_RES *result = mysql_store_result(conn);
+  fmt_table my_table;
+  my_table.add_cell("User");
+  my_table.add_cell("Description");
+  my_table.end_row();
+  while (auto row = mysql_fetch_row(result)) {
+    for (unsigned int i = 0; i < mysql_num_fields(result); i++) {
+      if (row[i] == NULL)
+        my_table.add_cell("");
+      else
+        my_table.add_cell((i == 0) ? this->getUserName(row[i]) : row[i]);
+    }
+    my_table.end_row();
+  }
+  mysql_free_result(result);
+  return my_table.print_table();
 }
 
 /* This helper function gets the username of the user */

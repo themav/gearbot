@@ -7,6 +7,6 @@
 
 #include <dpp/dpp.h>
 #include "DatabaseUtils.h"
-void buyCommand(const dpp::slashcommand_t& event);
-void deleteCommand(const dpp::slashcommand_t& event);
+void buyCommand(const dpp::slashcommand_t &event, DatabaseUtils& db);
+void deleteCommand(const dpp::slashcommand_t &event, DatabaseUtils& db);
 #endif //JIBBLESBOT_BUYCOMMAND_H

@@ -17,7 +17,7 @@ void helpCommand(const dpp::slashcommand_t& event) {
     help_message->add_field("Additional Information: ",
                             "Accidental entry? use `/delentry` to remove the last entry if it is yours. "
                             "\n Channel topic not up to date? use `/updatetopic` to manually update."
-                            "\n Want to see who's who? Run `/search <name>` to see what they've gotten recently!"
+                            "\n Want to see who's who? Run `/whois <name>` to see what they've gotten recently!"
                             "\n What about by gear model or brand? Use `/query <criteria>` to search by description!");
     help_message->add_field("\u200b", "Gearbot version " + VERSION + " made by <@224194164743471114>.");
     event.reply(dpp::message(event.command.channel_id, *help_message)); //send the message to user

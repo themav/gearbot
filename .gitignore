@@ -2,3 +2,6 @@
 CMakeFiles/
 .idea/
 *vscode*/
+*kdev4*/
+*.kdev4
+.cache/

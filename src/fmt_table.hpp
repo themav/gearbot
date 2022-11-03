@@ -81,7 +81,7 @@ private:
       try { // The following compares each width value and keeps the largest
         _width = _width > row.at(row_idx).length() ? _width
                                                    : row.at(row_idx).length();
-      } catch (std::out_of_range &) {
+      } catch (std::out_of_range &e) {
       } // Do nothing because we already have a value if the field is blank.
     }
     return _width;
