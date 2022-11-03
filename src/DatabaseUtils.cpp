@@ -10,7 +10,7 @@
 /* This function takes the ID of the purchase user, whether it's skis, and a short description */
 void DatabaseUtils::insertPurchase(const std::string& purchaser, bool& is_skis, const std::string& desc) {
     MYSQL_STMT *statement = mysql_stmt_init(conn); //Create a prepared statement
-    mysql_stmt_prepare(statement, "INSERT INTO purchases_test(purchase_date, purchase_user, is_skis, description) VALUES (NOW(), ?, ?, ?);", -1); //Create the statement with the SQL
+    mysql_stmt_prepare(statement, "INSERT INTO purchases(purchase_date, purchase_user, is_skis, description) VALUES (NOW(), ?, ?, ?);", -1); //Create the statement with the SQL
     MYSQL_BIND bind[3]; memset(bind, 0, sizeof(bind)); //Create the data binding array and clear it out;
     bind[0].buffer_type = MYSQL_TYPE_STRING; bind[0].buffer = (void*)purchaser.c_str(); bind[0].buffer_length = purchaser.length(); //Bind the purchaser string value, length is required to it knows when to stop reading the buffer
     bind[1].buffer_type = MYSQL_TYPE_TINY; bind[1].buffer = &is_skis; //Bind the boolean value
@@ -49,9 +49,9 @@ bool DatabaseUtils::deleteUserEntry(const dpp::snowflake &purchaser) {
     std::string user_id = std::to_string(purchaser); //Set purchaser to string
     MYSQL_STMT *statement = mysql_stmt_init(conn);
     //Look I know this SQL is fugly however it's better than implementing the logic on the client end
-    mysql_stmt_prepare(statement, "DELETE FROM purchases_test WHERE id IN("
+    mysql_stmt_prepare(statement, "DELETE FROM purchases WHERE id IN("
                                   "WITH temp_purchase AS ("
-                                  " (SELECT id,purchase_user FROM purchases_test where is_skis=0 ORDER BY purchase_date DESC limit 1) UNION (SELECT id,purchase_user FROM purchases_test where is_skis=1 ORDER BY purchase_date DESC limit 1)"
+                                  " (SELECT id,purchase_user FROM purchases where is_skis=0 ORDER BY purchase_date DESC limit 1) UNION (SELECT id,purchase_user FROM purchases where is_skis=1 ORDER BY purchase_date DESC limit 1)"
                                   ") SELECT id FROM temp_purchase WHERE purchase_user = ?);", -1);
     MYSQL_BIND bind[1]; memset(bind, 0, sizeof(bind));
     bind[0].buffer_type = MYSQL_TYPE_STRING; bind[0].buffer = (void *)user_id.c_str(); bind[0].buffer_length = user_id.length(); //Create the parameter binding to the string
