@@ -5,6 +5,8 @@
  * The first row inserted should be the table's headers. Also, the total number
  * of columns is calculated off the first row. Extra columns without a header
  * will not print. Set the cell header to blank ("") if needed.
+ *
+ * Copyright (C) MK 2022. Licensed under the MIT license.
  */
 
 #include <algorithm>
