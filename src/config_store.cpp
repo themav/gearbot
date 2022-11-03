@@ -21,11 +21,11 @@ config_store::config_store(const string &file_name) {
   _values = new std::map<string, string>;
   std::string line;
   while (std::getline(config_file, line)) {
-    line.erase(std::remove_if(line.begin(), line.end(), ::isspace));
+    line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
     if (line.empty() || line[0] == '#')
       continue;
     auto key = line.substr(0, line.find('='));
-    auto value = std::string(line.begin() + line.find('=') + 1, line.end() - 1);
+    auto value = line.substr(line.find('=') + 1, line.size());
     _values->insert(std::pair<string, string>(key, value));
   }
 }
