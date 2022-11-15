@@ -28,7 +28,7 @@ int main() {
   bot->on_log(dpp::utility::cout_logger());
 
   /* Handle slash command */
-  bot->on_slashcommand([](const dpp::slashcommand_t &event) {
+  bot->on_slashcommand([&config](const dpp::slashcommand_t &event) {
     /* Instantiate Database Utilities*/
   DatabaseUtils db(config.get_value("MARIADB_HOSTNAME"),
                    config.get_value("MARIADB_USERNAME"),
@@ -76,7 +76,6 @@ int main() {
   bot->terminating.wait(thread_lock);
   // Cleanup Program
   delete bot;
-  delete db;
   return 0;
 }
 // Catch a signal so we can gracefully shutdown the bot.
