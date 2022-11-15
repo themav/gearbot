@@ -14,7 +14,6 @@
 
 void signal_handler(int signal);
 dpp::cluster *bot;
-DatabaseUtils *db;
 
 using namespace dpp;
 int main() {
@@ -24,30 +23,30 @@ int main() {
   /* Create bot cluster */
   bot = new cluster(config.get_value("AUTH_TOKEN"));
 
-  /* Instantiate Database Utilities*/
-  db = new DatabaseUtils(config.get_value("MARIADB_HOSTNAME"),
-                         config.get_value("MARIADB_USERNAME"),
-                         config.get_value("MARIADB_PASSWORD"), bot);
-
+  
   /* Log to stdout */
   bot->on_log(dpp::utility::cout_logger());
 
   /* Handle slash command */
   bot->on_slashcommand([](const dpp::slashcommand_t &event) {
+    /* Instantiate Database Utilities*/
+  DatabaseUtils db(config.get_value("MARIADB_HOSTNAME"),
+                   config.get_value("MARIADB_USERNAME"),
+                   config.get_value("MARIADB_PASSWORD"), bot);
     /* Run the right command depending on what the command is */
     if (event.command.get_command_name() == "help") {
       helpCommand(event);
     } else if (event.command.get_command_name() == "buygear" ||
                event.command.get_command_name() == "buyskis") {
-      buyCommand(event, *db);
+      buyCommand(event, db);
     } else if (event.command.get_command_name() == "delentry") {
-      deleteCommand(event, *db);
+      deleteCommand(event, db);
     } else if (event.command.get_command_name() == "updatetopic") {
-      updateCommand(event, *db);
+      updateCommand(event, db);
     } else if (event.command.get_command_name() == "query") {
-      queryCommand(event, *db);
+      queryCommand(event, db);
     } else if (event.command.get_command_name() == "whois") {
-      whoisCommand(event, *db);
+      whoisCommand(event, db);
     }
   });
 
