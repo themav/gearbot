@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <string>
+#include <sstring>
 #include <vector>
 
 class fmt_table {
@@ -44,7 +45,7 @@ public:
     if (_table.empty())
       return output.str();               // If we're empty, do nothing.
     size_t col_count = _table[0].size(); // First row is the header.
-    size_t width[col_count];             // Array to store the column widths in.
+    std::vector<size_t> width(col_count); // vector to store the column widths in.
     std::stringstream separator;
     for (size_t i = 0; i < col_count; i++) {
       separator << _corner;    // Set the corner
@@ -56,12 +57,10 @@ public:
     separator << _corner << std::endl;
     output << separator.str(); // Output the initial line.
     for (auto &row : _table) {
-      size_t row_size =
-          std::min(col_count, row.size()); // Ensure we don't go out of bounds.
-      for (size_t i = 0; i < row_size; i++) {
+      for (size_t i = 0; i < col_count; i++) {
         output << _bar; // Leading Edge of cell
-        output << std::setw(width[i]) << row.at(i);
-      } // The above pads the cell contents with spaces to fill the width.
+        output << std::setw(width[i]) << (i < row.size() ? row[i] : "");
+      } // The above pads the cell contents with spaces to fill the width. The cell is padded to the column width and missing cells print blank.
       output << _bar << std::endl; // Trailing edge of last cell and new line.
       output << separator.str();
     }
@@ -81,11 +80,9 @@ private:
     if (_table.empty())
       return _width; // Zero if there's nothing.
     for (auto &row : _table) {
-      try { // The following compares each width value and keeps the largest
-        _width = _width > row.at(row_idx).length() ? _width
-                                                   : row.at(row_idx).length();
-      } catch (std::out_of_range &e) {
-      } // Do nothing because we already have a value if the field is blank.
+      // Skip rows too short to have the colummn and keep the largest width.
+      if (row_idx < row.size())
+        _width = std::max(_width, row[row_idx].length());
     }
     return _width;
   }
