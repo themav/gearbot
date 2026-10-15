@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <string>
-#include <sstring>
+#include <sstream>
 #include <vector>
 
 class fmt_table {
