@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(jibblesbot VERSION 1.6 DESCRIPTION "Skiing Discord Bot")
+project(gearbot VERSION 1.6 DESCRIPTION "Ski Gear Discord Bot")
 
 add_subdirectory(libs/DPP)
 
